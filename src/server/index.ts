@@ -16,7 +16,9 @@ interface Options {
   base: string;
   host: string;
   port: number;
+  title: string;
   command?: string;
+  bypasshelmet?: boolean;
 }
 
 interface CLI extends Options {
@@ -40,6 +42,8 @@ export default class Server {
         base: args.base,
         host: args.host,
         port: args.port,
+        title: args.title,
+        bypasshelmet: args.bypasshelmet,
       },
       command: args.command,
       ssl:

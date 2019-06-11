@@ -19,8 +19,45 @@ socket.on('connect', () => {
   const term = new Terminal();
   if (isNull(terminal)) return;
   term.open(terminal);
-  term.setOption('fontSize', 14);
+  const defaultOptions = { fontSize: 14 };
+  let options: object;
+  try {
+    if (isUndefined(localStorage.options)) {
+      options = defaultOptions;
+    } else {
+      options = JSON.parse(localStorage.options);
+    }
+  } catch {
+    options = defaultOptions;
+  }
+  Object.keys(options).forEach(key => {
+    term.setOption(key, options[key]);
+  });
+  const code = JSON.stringify(options, null, 2);
+  const editor = document.querySelector('#options .editor');
+  editor.value = code;
+  editor.addEventListener('keyup', e => {
+    try {
+      const updated = JSON.parse(editor.value);
+      const updatedCode = JSON.stringify(updated, null, 2);
+      editor.value = updatedCode;
+      editor.classList.remove('error');
+      localStorage.options = updatedCode;
+      Object.keys(updated).forEach(key => {
+        const value = updated[key];
+        term.setOption(key, value);
+      });
+      resize();
+    } catch {
+      // skip
+      editor.classList.add('error');
+    }
+  });
   if (!isNull(overlay)) overlay.style.display = 'none';
+  document.querySelector('#options .toggler').addEventListener('click', e => {
+    document.getElementById('options').classList.toggle('opened');
+    e.preventDefault();
+  });
   window.addEventListener('beforeunload', handler, false);
 
   term.attachCustomKeyEventHandler(copy);
