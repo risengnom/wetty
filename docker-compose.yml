@@ -13,7 +13,7 @@ services:
       SSHHOST: 'wetty-ssh'
       SSHPORT: 22
       NODE_ENV: 'development'
-    command: yarn start --sshhost redbrick.dcu.ie
+    command: yarn start
 
   web:
     image: nginx
